@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.syz</groupId>
+	<artifactId>admin</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<!-- 添加版权许可，该元素描述了项目所有License列表。 应该只列出该项目的license列表，不要列出依赖项目的 license列表。如果列出多个license，用户可以选择它们中的一个而不是接受所有license。-->
+	<licenses>
+		<!--描述了项目的license，用于生成项目的web站点的license页面，其他一些报表和validation也会用到该元素。-->
+		<license>
+			<!--license用于法律上的名称-->
+			<name>Apache 2</name>
+			<!--官方的license正文页面的URL-->
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<!--项目分发的主要方式： repo，可以从Maven库下载manual， 用户必须手动下载和安装依赖-->
+			<distribution>repo</distribution>
+			<!--关于license的补充信息-->
+			<comments>A business-friendly OSS license</comments>
+		</license>
+	</licenses>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.4.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+	<properties>
+		<docker.image.prefix>ag</docker.image.prefix>
+		<docker.plugin.version>0.4.13</docker.plugin.version>
+		<mapper.version>3.4.0</mapper.version>
+		<!--源代码使用的开发版本。-->
+		<maven.compile.source>1.8</maven.compile.source>
+		<!--需要生成的目标class文件的编译版本-->
+		<maven.compile.target>1.8</maven.compile.target>
+		<!-- 一般而言，target与source是保持一致的，但是，有时候为了让程序能在其他版本的jdk中运行(对于低版本目标jdk，源代码中需要没有使用低版本jdk中不支持的语法)，会存在target不同于source的情况 -->
+	</properties>
+	<!--模块（有时称作子项目） 被构建成项目的一部分。列出的每个模块元素是指向该模块的目录的相对路径-->
+	<modules>
+		<module>admin-center</module>
+	</modules>
+
+	<packaging>pom</packaging>
+	<!--项目开发者列表-->
+	<developers>
+		<developer>
+			<name>ace</name>
+			<email>463540703@qq.com</email>
+		</developer>
+	</developers>
+	<!--SCM(Source Control Management)标签允许你配置你的代码库，供Maven web站点和其它插件使用。-->
+	<scm>
+		<!--SCM的URL,该URL描述了版本库和如何连接到版本库。欲知详情，请看SCMs提供的URL格式和列表。该连接只读。-->
+		<connection>scm:https://github.com/syzpig/admin.git</connection>
+		<!--给开发者使用的，类似connection元素。即该连接不仅仅只读-->
+		<developerConnection>scm:git:https://github.com/syzpig/admin.git</developerConnection>
+		<!--指向项目的可浏览SCM库（例如ViewVC或者Fisheye）的URL。-->
+		<url>https://github.com/syzpig/admin</url>
+		<!--当前代码的标签，在开发阶段默认为HEAD-->
+		<tag>1.0-SNAPSHOT</tag>
+	</scm>
+	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.14</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+	<!--发现依赖和扩展的远程仓库列表。标签的作用是用来配置maven项目的远程仓库-->
+	<repositories>
+		<repository>
+			<id>oss</id>
+			<name>oss</name>
+			<url>https://oss.sonatype.org/content/groups/public</url>
+		</repository>
+	</repositories>
+
+	<!--依赖管理，用于管理spring-cloud的依赖，其中Camden.SR3是版本号-->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>Dalston.SR1</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>fastjson</artifactId>
+				<version>1.2.33</version>
+			</dependency>
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>druid</artifactId>
+				<version>1.0.11</version>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
+	<!--参见distributionManagement元素-->
+	<distributionManagement>
+		<!--构件的快照部署到哪里？如果没有配置该元素，默认部署到repository元素配置的仓库，参见distributionManagement/repository元素-->
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<name>Maven Central Staging Repository</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
+
+	<!--构建项目所需要的信息。参见build元素-->
+	<build>
+		<!--使用的报表插件和他们的配置。-->
+		<plugins>
+			<!--plugin元素包含描述报表插件需要的信息-->
+			<plugin>
+				<!--maven maven-compiler-plugin是个项目管理工具，如果我们不告诉它我们的代码要使用什么样的jdk版本编译的话，它就会用maven-compiler-plugin默认的jdk版本来进行处理，这样就容易出现版本不匹配的问题，以至于可能导致编译不通过的问题。例如代码中要是使用上了jdk1.7的新特性，但是maven在编译的时候使用的是jdk1.6的版本，那这一段代码是完全不可能编译成.class文件的。为了处理这一种情况的出现，在构建maven项目的时候，我习惯性第一步就是配置maven-compiler-plugin插件。-->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<source>${maven.compile.source}</source>
+					<target>${maven.compile.target}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<!--maven-source-plugin提供项目自动将源码打包并发布的功能，在需要发布源码项目的pom.xml文件中添加如下代码即可-->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!--在多项目构建中，将source-plugin置于顶层或parent的pom中并不会发挥作用，必须置于具体项目的pom中。-->
+
+			<!--maven deploy plugin主要是为了用来将artifact部署到远程仓库中。-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.8.2</version>
+			</plugin>
+		</plugins>
+	</build>
+
+
+</project>
